@@ -6,13 +6,10 @@ import sys
 import inspect
 import os
 
-from streams import Twitch, Hitbox
+from streams import *
 
 # Stream services to use
 services = [Twitch, Hitbox]
-
-TWITCHAPI = "https://api.twitch.tv/kraken/"
-HITBOXAPI = "https://api.hitbox.tv/"
 
 
 class Streamer:
