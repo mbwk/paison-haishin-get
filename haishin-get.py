@@ -17,9 +17,9 @@ class Report():
 
     def getMsg(self):
         if self.isstrm:
-            return self.name + " (" + self.url + ") is STREAMING " + self.game
+            return "{name} ({url}) is STREAMING {game}".format(name=self.name, url=self.url, game=self.game)
         elif not self.isstrm:
-            return self.name + " (" + self.url + ") is OFFLINE"
+            return "{name} ({url}) is OFFLINE".format(name=self.name, url=self.url)
 
 
 class StreamSvc(Enum):
@@ -31,7 +31,7 @@ class StreamSvc(Enum):
         if type(instr) != str:
             return None
 
-        instr.lower
+        instr = instr.lower
 
         if instr == "twitch" or instr == "ttv" or instr == "t":
             return StreamSvc.twitch
@@ -40,17 +40,13 @@ class StreamSvc(Enum):
         else:
             return None
         
-
-def twitchRequest(api, value):
-    return urllib.request.urlopen(TWITCHAPI + api + "/" + value).read().decode("utf-8")
-
-
-def hitboxRequest(api, value):
-    return urllib.request.urlopen(HITBOXAPI + api + "/" + value).read().decode("utf-8")
+def streamApiRequest(api, path, value):
+    requestString = "{}{}/{}".format(api, path, value)
+    return urllib.request.urlopen(requestString).read().decode("utf-8")
 
 
 def getChannelInfoTwitch(streamer_name):
-    reqstr = twitchRequest("channels", streamer_name)
+    reqstr = streamApiRequest(TWITCHAPI, "channels", streamer_name)
     obj = json.loads(reqstr)
 
     if obj["status"] == 404:
@@ -63,7 +59,7 @@ def getChannelInfoTwitch(streamer_name):
 
 
 def getStreamInfoTwitch(streamer_name):
-    reqstr = twitchRequest("streams", streamer_name)
+    reqstr = streamApiRequest(TWITCHAPI, "streams", streamer_name)
     obj = json.loads(reqstr)
 
     if obj["stream"] is None:
@@ -80,7 +76,7 @@ def getStreamInfoTwitch(streamer_name):
 
 
 def getMediaInfoHitbox(streamer_name):
-    reqstr = hitboxRequest("media/live", streamer_name)
+    reqstr = streamApiRequest(HITBOXAPI, "media/live", streamer_name)
     obj = json.loads(reqstr)
 
     livestreamobj = obj["livestream"][0]
@@ -105,10 +101,6 @@ def getStatus(streamer):
         return getMediaInfoHitbox(streamer.name)
     else:
         return "invalid service specified"
-
-
-def getStrm(streamer_name, stream_service): # quick debug function
-    return getStatus(Streamer(streamer_name, StreamSvc.getSvc(stream_service)))
 
 
 class Streamer:
