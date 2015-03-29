@@ -2,8 +2,7 @@
 #
 
 import urllib.request
-import json
-import sys
+import json, sys, inspect, os
 from enum import Enum
 
 TWITCHAPI = "https://api.twitch.tv/kraken/"
@@ -139,7 +138,8 @@ def makeStreamer(name, svcstr):
 
 def readConf():
     streams = []
-    confile = open("streams.conf", "r")
+    localdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    confile = open(localdir + "/streams.conf", "r")
     for line in confile:
         if line.startswith("#"):
             continue
