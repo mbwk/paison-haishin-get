@@ -142,8 +142,18 @@ def readConf():
 
     return streams
 
+
+def parseArgs():
+    streams = []
+    streams.append(makeStreamer(sys.argv[1], sys.argv[2]))
+    return streams
+
+
 def main():
-    streams = readConf()
+    if len(sys.argv) == 3:
+        streams = parseArgs()
+    else:
+        streams = readConf()
 
     for s in streams:
         r = getStatus(s)
