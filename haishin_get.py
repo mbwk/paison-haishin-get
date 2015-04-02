@@ -17,20 +17,20 @@ class Streamer:
     def __init__(self, name, svcstr):
         self.name = name
         self.svcstr = svcstr.lower()
-        self.service = self.detectStreamSvc()
+        self.service = self.detect_stream()
 
-    def getName(self):
+    def get_name(self):
         return self.name
 
-    def getService(self):
+    def get_service(self):
         return self.service
 
-    def detectStreamSvc(self):
+    def detect_stream(self):
         for service in services:
             if self.svcstr in service.identified_by:
                 return service()
 
-    def getInfo(self):
+    def get_info(self):
         msg = ""
         try:
             msg = self.service.get_info(self.name)
@@ -39,12 +39,12 @@ class Streamer:
         return msg
 
 
-def makeStreamer(name, svcstr):
+def make_streamer(name, svcstr):
     streamer = Streamer(name, svcstr)
     return streamer
 
 
-def readConf():
+def read_config():
     streamers = []
     localdir = os.path.dirname(
         os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -55,25 +55,25 @@ def readConf():
 
         splitln = line.split()
         if len(splitln) == 2:
-            streamers.append(makeStreamer(splitln[0], splitln[1]))
+            streamers.append(make_streamer(splitln[0], splitln[1]))
 
     return streamers
 
 
-def parseArgs():
+def parse_args():
     streamers = []
-    streamers.append(makeStreamer(sys.argv[1], sys.argv[2]))
+    streamers.append(make_streamer(sys.argv[1], sys.argv[2]))
     return streamers
 
 
 def main():
     if len(sys.argv) == 3:
-        streamers = parseArgs()
+        streamers = parse_args()
     else:
-        streamers = readConf()
+        streamers = read_config()
 
     for s in streamers:
-        print(s.getInfo())
+        print(s.get_info())
 
 
 if __name__ == "__main__":
