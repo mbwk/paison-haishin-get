@@ -1,13 +1,13 @@
 import urllib.request
 import sys
 import inspect
+import shutil
 import os
 
 from .service import gen_services
 
 
-class Streamer:
-
+class Streamer(object):
     def __init__(self, name, svcstr):
         self.name = name
         self.svcstr = svcstr.lower()
@@ -32,34 +32,43 @@ class Streamer:
             msg = "Stream not found: {} {}".format(self.name, self.svcstr)
         return msg
 
+class ConfigHandler(object):
+    dir_ = os.path.expanduser('~/.config/haishin-get/')
+    file = 'streams.conf'
 
-def make_streamer(name, svcstr):
-    streamer = Streamer(name, svcstr)
-    return streamer
+    def exists(self):
+        if not os.path.exists(self.dir_):
+            os.makedirs(self.dir_)
+        if not os.path.isfile(os.path.join(self.dir_, self.file)):
+            return False
+        return True
 
+    def create(self):
+        sample_dir = os.path.abspath(__package__)
+        sample_conf = os.path.join(sample_dir, self.file)
 
-def read_config():
-    streamers = []
-    localdir = os.path.dirname(
-        os.path.abspath(inspect.getfile(inspect.currentframe()))[-1])
-    try:
-        confile = open(os.path.join(localdir , 'streams.conf'), 'r')
-    except:
-        raise SystemExit("Could not open find streams.conf in {}".format(localdir))
-    for line in confile:
-        if line.startswith("#"):
-            continue
+        shutil.copyfile(sample_conf, os.path.join(self.dir_, self.file))    
 
-        splitln = line.split()
-        if len(splitln) == 2:
-            streamers.append(make_streamer(splitln[0], splitln[1]))
+    def read(self):
+        streamers = []        
+        try:
+            confile = open(os.path.join(self.dir_ , 'streams.conf'), 'r')
+        except:
+            raise SystemExit("Could not open find streams.conf in {}".format(localdir))
+        for line in confile:
+            if line.startswith("#"):
+                continue
 
-    return streamers
+            splitln = line.split()
+            if len(splitln) == 2:
+                streamers.append(Streamer(splitln[0], splitln[1]))
+
+        return streamers
 
 
 def parse_args():
     streamers = []
-    streamers.append(make_streamer(sys.argv[1], sys.argv[2]))
+    streamers.append(Streamer(sys.argv[1], sys.argv[2]))
     return streamers
 
 
@@ -67,7 +76,10 @@ def main():
     if len(sys.argv) == 3:
         streamers = parse_args()
     else:
-        streamers = read_config()
+        ch = ConfigHandler()
+        if not ch.exists():
+            ch.create()
+        streamers = ch.read()
 
     for s in streamers:
         print(s.get_info())
