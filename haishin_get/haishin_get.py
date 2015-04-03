@@ -4,7 +4,6 @@ import inspect
 import os
 
 from .service import gen_services
-# Stream services to use
 
 
 class Streamer:
@@ -48,7 +47,6 @@ def read_config():
         confile = open(os.path.join(localdir , 'streams.conf'), 'r')
     except:
         raise SystemExit("Could not open find streams.conf in {}".format(localdir))
-    print(localdir)
     for line in confile:
         if line.startswith("#"):
             continue
