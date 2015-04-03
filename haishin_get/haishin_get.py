@@ -29,8 +29,7 @@ class Streamer:
         try:
             msg = self.service.get_info(self.name)
         except:
-            msg = "Service not found: {} {}".format(self.name, self.svcstr)
-            raise
+            msg = "Stream not found: {} {}".format(self.name, self.svcstr)
         return msg
 
 
