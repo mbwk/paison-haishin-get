@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-#
-
 import urllib.request
 import sys
 import inspect
@@ -46,8 +43,12 @@ def make_streamer(name, svcstr):
 def read_config():
     streamers = []
     localdir = os.path.dirname(
-        os.path.abspath(inspect.getfile(inspect.currentframe())))
-    confile = open(localdir + "/streams.conf", "r")
+        os.path.abspath(inspect.getfile(inspect.currentframe()))[-1])
+    try:
+        confile = open(os.path.join(localdir , 'streams.conf'), 'r')
+    except:
+        raise SystemExit("Could not open find streams.conf in {}".format(localdir))
+    print(localdir)
     for line in confile:
         if line.startswith("#"):
             continue
@@ -73,7 +74,3 @@ def main():
 
     for s in streamers:
         print(s.get_info())
-
-
-if __name__ == "__main__":
-    main()
