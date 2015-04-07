@@ -13,12 +13,12 @@ class BaseSVC(object):
 
     def report(self, name, isstrm, url, game=""):
         if isstrm:
-            msg = "{name} ({url}) is STREAMING {game}".format(
+            msg = "{name} is STREAMING {game} @ ({url})".format(
                 name=name,
                 url=url,
                 game=game)
         else:
-            msg = "{name} ({url}) is OFFLINE".format(
+            msg = "{name} is OFFLINE ({url})".format(
                 name=name,
                 url=url)
         return msg
