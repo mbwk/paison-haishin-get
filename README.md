@@ -1,4 +1,7 @@
 # paison-haishin-get
+
+[![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
+
 Simple little script for checking for specified livestreams on Twitch
 and Hitbox.
 
